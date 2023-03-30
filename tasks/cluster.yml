@@ -18,7 +18,7 @@
     after: "{{ ceph_nfs_configured_cluster }}"
   register: __cfg_diff
 
-- name: Apply cluster config
+- name: Apply cluster config  # noqa no-changed-when
   ansible.builtin.command:
     cmd: "ceph orch apply -i -"
     stdin: "{{ ceph_nfs_configured_cluster | to_yaml }}"
@@ -42,7 +42,7 @@
     cmd: "ceph nfs cluster config get {{ cluster.name }}"
   register: __cluster_config
 
-- name: Apply cluster config
+- name: Apply cluster config  # noqa no-changed-when
   ansible.builtin.command:
     cmd: "ceph nfs cluster config set {{ cluster.name }} -i -"
     stdin: "{{ cluster.config }}"

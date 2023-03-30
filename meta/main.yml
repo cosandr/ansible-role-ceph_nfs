@@ -19,7 +19,8 @@ galaxy_info:
         - "9"
     - name: Fedora
       versions:
-        - "any"
+        - "36"
+        - "37"
 
   galaxy_tags: []
 

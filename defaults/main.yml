@@ -1,23 +1,23 @@
 ---
 
 ceph_nfs_clusters: []
-  # - name: "cluster"
-  #   port: 2150
-  #   count: 3
-  #   config: |
-  #     NFSV4 {
-  #         Allow_Numeric_Owners = true;
-  #         Only_Numeric_Owners = true;
-  #     }
-  #   ingress:
-  #     - count: 2
-  #       port: 2050
-  #       monitor_port: 9050
-  #       vip: "10.1.2.200/24"
+# - name: "cluster"
+#   port: 2150
+#   count: 3
+#   config: |
+#     NFSV4 {
+#         Allow_Numeric_Owners = true;
+#         Only_Numeric_Owners = true;
+#     }
+#   ingress:
+#     - count: 2
+#       port: 2050
+#       monitor_port: 9050
+#       vip: "10.1.2.200/24"
 ceph_nfs_exports: []
-  # - path: "/"
-  #   cluster_id: "{{ ceph_nfs_clusters[0].name }}"
-  #   pseudo: "/example"
-  #   clients:
-  #     - addresses:
-  #         - "10.1.2.3/32"
+# - path: "/"
+#   cluster_id: "{{ ceph_nfs_clusters[0].name }}"
+#   pseudo: "/example"
+#   clients:
+#     - addresses:
+#         - "10.1.2.3/32"

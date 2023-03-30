@@ -18,7 +18,7 @@
     after: "{{ ceph_nfs_configured_ingress }}"
   register: __cfg_diff
 
-- name: Apply ingress config
+- name: Apply ingress config  # noqa no-changed-when
   ansible.builtin.command:
     cmd: "ceph orch apply -i -"
     stdin: "{{ ceph_nfs_configured_ingress | to_yaml }}"
