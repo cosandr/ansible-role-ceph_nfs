@@ -1,0 +1,30 @@
+{
+  "access_type": "{{ export.access_type | default('RW') }}",
+  "clients": [
+{% for c in export.clients %}
+    {
+      "addresses": {{ c.addresses | to_json }},
+      "access_type": "{{ c.access_type | default(export.access_type | default('RW')) }}",
+      "squash": "{{ c.squash | default(export.squash | default('no_root_squash')) }}"
+    }{% if not loop.last %},{% endif %}
+{% endfor %}
+  ],
+  "cluster_id": "{{ export.cluster_id }}",
+  "export_id": {{ export.export_id | default(idx + 1) }},
+  "fsal": {
+    "fs_name": "{{ export.fs_name | default('cephfs') }}",
+    "name": "CEPH",
+    "sec_label_xattr": "security.selinux",
+    "user_id": "nfs.{{ export.cluster_id }}.{{ idx + 1 }}"
+  },
+  "path": "{{ export.path }}",
+  "protocols": [
+    4
+  ],
+  "pseudo": "{{ export.pseudo }}",
+  "security_label": true,
+  "squash": "{{ export.squash | default('no_root_squash') }}",
+  "transports": [
+    "TCP"
+  ]
+}

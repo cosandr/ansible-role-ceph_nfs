@@ -1,0 +1,49 @@
+---
+
+- name: Get cluster service
+  changed_when: false
+  check_mode: false
+  failed_when: false
+  ansible.builtin.command:
+    cmd: "ceph orch ls --service_name nfs.{{ cluster.name }} --export"
+  register: __svc
+
+- name: Set existing service fact
+  ansible.builtin.set_fact:
+    ceph_nfs_cluster_svc: "{{ __svc.stdout | from_yaml if __svc.stdout != 'No services reported' else {} }}"
+
+- name: Show differences
+  ansible.utils.fact_diff:
+    before: "{{ ceph_nfs_cluster_svc }}"
+    after: "{{ ceph_nfs_configured_cluster }}"
+  register: __cfg_diff
+
+- name: Apply cluster config
+  ansible.builtin.command:
+    cmd: "ceph orch apply -i -"
+    stdin: "{{ ceph_nfs_configured_cluster | to_yaml }}"
+  when: __cfg_diff.diff_lines
+
+- name: Configure ingresses
+  ansible.builtin.include_tasks:
+    file: ingress.yml
+  loop: "{{ cluster.ingress | default([]) }}"
+  loop_control:
+    loop_var: "ingress"
+    label: "{{ ingress.vip }}"
+  vars:
+    ceph_nfs_configured_ingress: "{{ lookup('template', 'nfs-ingress.yaml.j2') | from_yaml }}"
+
+- name: Get cluster config
+  changed_when: false
+  check_mode: false
+  failed_when: false
+  ansible.builtin.command:
+    cmd: "ceph nfs cluster config get {{ cluster.name }}"
+  register: __cluster_config
+
+- name: Apply cluster config
+  ansible.builtin.command:
+    cmd: "ceph nfs cluster config set {{ cluster.name }} -i -"
+    stdin: "{{ cluster.config }}"
+  when: __cluster_config.stdout != cluster.config.strip()

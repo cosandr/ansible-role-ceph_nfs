@@ -1,0 +1,28 @@
+---
+
+- name: Configure clusters
+  ansible.builtin.include_tasks:
+    file: cluster.yml
+    apply:
+      tags: ["cluster"]
+  loop: "{{ ceph_nfs_clusters }}"
+  loop_control:
+    loop_var: "cluster"
+    label: "{{ cluster.name }}"
+  vars:
+    ceph_nfs_configured_cluster: "{{ lookup('template', 'nfs-svc.yaml.j2') | from_yaml }}"
+  tags: ["cluster"]
+
+- name: Configure cluster exports
+  ansible.builtin.include_tasks:
+    file: export.yml
+    apply:
+      tags: ["export"]
+  loop: "{{ ceph_nfs_exports }}"
+  loop_control:
+    index_var: idx
+    loop_var: "export"
+    label: "{{ export.pseudo }}"
+  vars:
+    ceph_nfs_configured_export: "{{ lookup('template', 'nfs-export.json.j2') }}"
+  tags: ["exports"]

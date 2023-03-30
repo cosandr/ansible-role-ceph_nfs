@@ -1,0 +1,25 @@
+---
+
+- name: Get ingress service
+  changed_when: false
+  check_mode: false
+  failed_when: false
+  ansible.builtin.command:
+    cmd: "ceph orch ls --service_name ingress.nfs.{{ ingress.name }} --export"
+  register: __svc
+
+- name: Set existing service fact
+  ansible.builtin.set_fact:
+    ceph_nfs_ingress_svc: "{{ __svc.stdout | from_yaml if __svc.stdout != 'No services reported' else {} }}"
+
+- name: Show differences
+  ansible.utils.fact_diff:
+    before: "{{ ceph_nfs_ingress_svc }}"
+    after: "{{ ceph_nfs_configured_ingress }}"
+  register: __cfg_diff
+
+- name: Apply ingress config
+  ansible.builtin.command:
+    cmd: "ceph orch apply -i -"
+    stdin: "{{ ceph_nfs_configured_ingress | to_yaml }}"
+  when: __cfg_diff.diff_lines

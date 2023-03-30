@@ -1,0 +1,10 @@
+service_type: ingress
+service_id: nfs.{{ ingress.name }}
+service_name: ingress.nfs.{{ ingress.name }}
+placement:
+  count: {{ ingress.count | default(2) }}
+spec:
+  backend_service: nfs.{{ cluster.name }}
+  frontend_port: {{ ingress.port | default(cluster.port | default(2049)) }}
+  monitor_port: {{ ingress.monitor_port | default(9049) }}
+  virtual_ip: {{ ingress.vip }}

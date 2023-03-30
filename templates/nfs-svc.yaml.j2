@@ -1,0 +1,7 @@
+service_type: nfs
+service_id: {{ cluster.name }}
+service_name: nfs.{{ cluster.name }}
+placement:
+  count: {{ cluster.count | default(3) }}
+spec:
+  port: {{ cluster.port | default(2049) }}
