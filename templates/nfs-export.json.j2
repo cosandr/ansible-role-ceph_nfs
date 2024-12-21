@@ -14,15 +14,16 @@
   "fsal": {
     "fs_name": "{{ export.fs_name | default('cephfs') }}",
     "name": "CEPH",
-    "sec_label_xattr": "security.selinux",
-    "user_id": "nfs.{{ export.cluster_id }}.{{ idx + 1 }}"
+{% if export.seclabel | default(false) %}
+    "sec_label_xattr": "security.selinux"
+{% endif %}
   },
   "path": "{{ export.path }}",
   "protocols": [
     4
   ],
   "pseudo": "{{ export.pseudo }}",
-  "security_label": true,
+  "security_label": {{ export.seclabel | default(false) | lower }},
   "squash": "{{ export.squash | default('no_root_squash') }}",
   "transports": [
     "TCP"

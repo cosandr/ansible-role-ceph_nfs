@@ -8,3 +8,5 @@ spec:
   frontend_port: {{ ingress.port | default(cluster.port | default(2049)) }}
   monitor_port: {{ ingress.monitor_port | default(9049) }}
   virtual_ip: {{ ingress.vip }}
+  enable_haproxy_protocol: {{ cluster.enable_haproxy_protocol | default(false) }}
+  first_virtual_router_id: {{ ingress.first_virtual_router_id | default(50) }}

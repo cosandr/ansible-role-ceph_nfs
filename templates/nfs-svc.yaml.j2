@@ -5,3 +5,4 @@ placement:
   count: {{ cluster.count | default(3) }}
 spec:
   port: {{ cluster.port | default(2049) }}
+  enable_haproxy_protocol: {{ cluster.enable_haproxy_protocol | default(false) }}
